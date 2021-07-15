@@ -84,7 +84,10 @@ class MockHLSServer {
             "content-type",
             fetchRes.headers.get("content-type") || "application/x-mpegURL"
           );
-          if (path.extname(url).indexOf(".m3u8") === 0) {
+          if (
+            path.extname(url).indexOf(".m3u8") === 0 ||
+            path.extname(url).indexOf(".ttml") === 0
+          ) {
             this._logger.debug("Handling playlist request.", url);
             res.send(this._handlePlaylistResponse(content, url));
           } else {
@@ -217,7 +220,7 @@ class MockHLSServer {
   _splitPlaylistIntoHeaderAndRest(
     parsedPlaylist: ParsedPlaylist,
     currentTime: number
-  ) {
+  ): { header: Line[]; rest: Line[]; reachedEnd: boolean } {
     let headerEnd = 0;
     let visibleAreaEnd = 0;
 
